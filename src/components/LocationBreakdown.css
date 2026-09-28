@@ -1,0 +1,68 @@
+.breakdown-card {
+  margin-bottom: 22px;
+}
+.breakdown-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.breakdown-unit {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.breakdown-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 130px 44px;
+  align-items: center;
+  gap: 14px;
+  font-size: 13.5px;
+}
+.breakdown-track {
+  height: 14px;
+  min-width: 0;
+}
+/* Rounded end, square baseline — same mark spec as production-monitor's bars. */
+.breakdown-bar {
+  height: 100%;
+  background: var(--brand);
+  border-radius: 0 4px 4px 0;
+  min-width: 2px;
+  transition: width 0.25s ease;
+}
+.breakdown-value {
+  text-align: right;
+  white-space: nowrap;
+}
+.breakdown-share {
+  text-align: right;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.breakdown-empty {
+  color: var(--muted);
+  font-size: 13.5px;
+  margin: 0;
+  padding: 20px 0;
+}
+
+@media (max-width: 560px) {
+  .breakdown-row {
+    grid-template-columns: 84px 1fr 44px;
+    row-gap: 4px;
+  }
+  .breakdown-value {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    text-align: left;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+}
