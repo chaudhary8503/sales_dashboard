@@ -407,18 +407,27 @@ export async function recordRefund(customerId: string, refund: RefundPayload): P
 export const ATTACHMENT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/pdf'];
 export const ATTACHMENT_MAX_BYTES = 10 * 1024 * 1024;
 
+/** The file's type as the bucket expects it (some browsers give HEIC photos no type). */
+export function attachmentType(file: File): string {
+  if (file.type) return file.type === 'image/jpg' ? 'image/jpeg' : file.type;
+  if (/\.hei[cf]$/i.test(file.name)) return 'image/heic';
+  if (/\.pdf$/i.test(file.name)) return 'application/pdf';
+  return '';
+}
+
 /** Uploads a cheque / bank slip photo or PDF, then records it on the payment. */
 export async function attachPaymentFile(paymentId: string, file: File): Promise<void> {
+  const mime = attachmentType(file);
   const safe = file.name.replace(/[^A-Za-z0-9._-]+/g, '_').replace(/^_+|_+$/g, '').slice(-80) || 'file';
   const path = `payments/${paymentId}/${Date.now()}-${safe}`;
-  const up = await supabase.storage.from('sales-attachments').upload(path, file, { contentType: file.type, upsert: false });
+  const up = await supabase.storage.from('sales-attachments').upload(path, file, { contentType: mime, upsert: false });
   if (up.error) throw toSalesError(up.error);
   unwrap(
     await sales().rpc('add_payment_attachment', {
       p_payment_id: paymentId,
       p_storage_path: path,
       p_file_name: file.name,
-      p_mime_type: file.type,
+      p_mime_type: mime,
       p_size_bytes: file.size,
     }),
   );

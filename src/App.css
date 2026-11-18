@@ -239,3 +239,32 @@
   justify-content: flex-end;
   flex-wrap: nowrap;
 }
+.timeline {
+  margin: 0;
+  padding: 0 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+}
+.attachments {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 14px;
+}
+.attachments img {
+  display: block;
+  max-width: 220px;
+  max-height: 160px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  object-fit: contain;
+}
+tr.late-row td {
+  background: var(--amber-light);
+}

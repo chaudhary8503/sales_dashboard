@@ -21,11 +21,15 @@ import { setErrorContext, toSalesError } from './errors';
 import { setLengthUnit, todayKarachi, type LengthUnit } from './format';
 import { supabase } from './lib/supabase';
 import LoginPage from './pages/LoginPage';
+import ChequesPage from './pages/ChequesPage';
 import CustomerPage from './pages/CustomerPage';
 import CustomersPage from './pages/CustomersPage';
 import InvoicePage from './pages/InvoicePage';
 import InvoicesPage from './pages/InvoicesPage';
 import NewSalePage from './pages/NewSalePage';
+import PaymentNewPage from './pages/PaymentNewPage';
+import PaymentPage from './pages/PaymentPage';
+import PaymentsPage from './pages/PaymentsPage';
 import SaleOrderNewPage from './pages/SaleOrderNewPage';
 import SaleOrderPage from './pages/SaleOrderPage';
 import SaleOrdersPage from './pages/SaleOrdersPage';
@@ -227,9 +231,10 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
     }
     case 'payments': {
       if (id && isPrint) return <PaymentReceiptPrint session={session} paymentId={id} auto={auto} />;
-      if (id) return <Placeholder />;
-      if (path[1] === 'new') return session.can('record_payment') ? <Placeholder /> : <NoAccess />;
-      return allowed(section) ? <Placeholder /> : <NoAccess />;
+      if (id) return <PaymentPage session={session} paymentId={id} />;
+      if (path[1] === 'new')
+        return session.can('record_payment') ? <PaymentNewPage session={session} customerId={route.query.get('customer')} /> : <NoAccess />;
+      return allowed(section) ? <PaymentsPage session={session} /> : <NoAccess />;
     }
     case 'credit-notes':
       if (id && isPrint) return <CreditNotePrint session={session} creditNoteId={id} auto={auto} />;
@@ -240,6 +245,7 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
       if (!allowed(section)) return <NoAccess />;
       return id ? <CustomerPage session={session} customerId={id} /> : <CustomersPage session={session} />;
     case 'cheques':
+      return allowed(section) ? <ChequesPage session={session} /> : <NoAccess />;
     case 'returns':
     case 'receivables':
     case 'analytics':
