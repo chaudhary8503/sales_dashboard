@@ -217,3 +217,9 @@
 .narrow-card {
   max-width: 640px;
 }
+.totals-gap {
+  margin-top: 16px;
+}
+.section-gap {
+  margin-top: 22px;
+}

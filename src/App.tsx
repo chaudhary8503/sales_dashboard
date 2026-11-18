@@ -21,6 +21,8 @@ import { setErrorContext, toSalesError } from './errors';
 import { setLengthUnit, todayKarachi, type LengthUnit } from './format';
 import { supabase } from './lib/supabase';
 import LoginPage from './pages/LoginPage';
+import InvoicePage from './pages/InvoicePage';
+import InvoicesPage from './pages/InvoicesPage';
 import NewSalePage from './pages/NewSalePage';
 import ChallanPrint from './print/ChallanPrint';
 import CreditNotePrint from './print/CreditNotePrint';
@@ -209,8 +211,8 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
         if (format === 'challan') return <ChallanPrint session={session} invoiceId={id} />;
         return <InvoicePrint session={session} invoiceId={id} format={format === 'a5' ? 'a5' : 'a4'} auto={auto} />;
       }
-      if (id) return <Placeholder />;
-      return allowed(section) ? <Placeholder /> : <NoAccess />;
+      if (id) return <InvoicePage session={session} invoiceId={id} />;
+      return allowed(section) ? <InvoicesPage session={session} /> : <NoAccess />;
     }
     case 'orders': {
       if (id && isPrint) return <SaleOrderPrint session={session} orderId={id} auto={auto} />;
