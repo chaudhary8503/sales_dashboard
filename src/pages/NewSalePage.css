@@ -77,3 +77,7 @@
       'totals';
   }
 }
+/* Paid by: method + reference on one row, kept to a sensible width. */
+.ns-head .span-2 .inline-input {
+  max-width: 560px;
+}

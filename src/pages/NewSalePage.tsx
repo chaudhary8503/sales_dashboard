@@ -350,7 +350,7 @@ function SaleForm({ session, order, presetCustomer }: { session: Session; order:
                 {daysOk && days !== null && <div className="hint">Due on {formatDate(addDays(date, days))}</div>}
               </div>
             ) : (
-              <div className="field">
+              <div className="field span-2">
                 <label htmlFor="ns-via">Paid by</label>
                 <div className="inline-input">
                   <select id="ns-via" className="fixed" value={cashVia} onChange={(e) => setCashVia(e.target.value as CashVia)}>
@@ -359,6 +359,7 @@ function SaleForm({ session, order, presetCustomer }: { session: Session; order:
                     <option value="online">Online</option>
                   </select>
                   <input
+                    className="ns-ref"
                     aria-label="Reference (optional)"
                     placeholder="Reference (optional)"
                     value={cashRef}

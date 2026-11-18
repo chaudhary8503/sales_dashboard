@@ -51,7 +51,12 @@
   margin-bottom: 12px;
 }
 
-/* Quantity + unit | rate | discount | supply from — equal columns. */
+/* Quantity + unit | rate | discount | supply from. Columns follow the room the
+   line panel actually has (a container query, not the window width), so browser
+   zoom or the stock panel never squeezes a field: four across, then two, then one. */
+.sale-line {
+  container: sale-line / inline-size;
+}
 .sale-line-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -64,6 +69,21 @@
 }
 .sale-line-grid.order.no-discount {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@container sale-line (max-width: 700px) {
+  .sale-line-grid,
+  .sale-line-grid.order,
+  .sale-line-grid.invoice.no-discount {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container sale-line (max-width: 360px) {
+  .sale-line-grid,
+  .sale-line-grid.order,
+  .sale-line-grid.invoice.no-discount,
+  .sale-line-grid.order.no-discount {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .sale-line-grid .field {
   min-width: 0;
@@ -102,21 +122,8 @@
   margin: 10px 0 0;
 }
 
-@media (max-width: 900px) {
-  .sale-line-grid,
-  .sale-line-grid.order,
-  .sale-line-grid.invoice.no-discount {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media (max-width: 480px) {
   .sale-line {
     padding: 12px;
-  }
-  .sale-line-grid,
-  .sale-line-grid.order,
-  .sale-line-grid.invoice.no-discount,
-  .sale-line-grid.order.no-discount {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
