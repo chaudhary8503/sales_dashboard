@@ -24,6 +24,9 @@ import LoginPage from './pages/LoginPage';
 import InvoicePage from './pages/InvoicePage';
 import InvoicesPage from './pages/InvoicesPage';
 import NewSalePage from './pages/NewSalePage';
+import SaleOrderNewPage from './pages/SaleOrderNewPage';
+import SaleOrderPage from './pages/SaleOrderPage';
+import SaleOrdersPage from './pages/SaleOrdersPage';
 import ChallanPrint from './print/ChallanPrint';
 import CreditNotePrint from './print/CreditNotePrint';
 import InvoicePrint from './print/InvoicePrint';
@@ -216,9 +219,9 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
     }
     case 'orders': {
       if (id && isPrint) return <SaleOrderPrint session={session} orderId={id} auto={auto} />;
-      if (id) return <Placeholder />;
-      if (path[1] === 'new') return session.can('create_sale_order') ? <Placeholder /> : <NoAccess />;
-      return allowed(section) ? <Placeholder /> : <NoAccess />;
+      if (id) return <SaleOrderPage session={session} orderId={id} />;
+      if (path[1] === 'new') return session.can('create_sale_order') ? <SaleOrderNewPage session={session} /> : <NoAccess />;
+      return allowed(section) ? <SaleOrdersPage session={session} /> : <NoAccess />;
     }
     case 'payments': {
       if (id && isPrint) return <PaymentReceiptPrint session={session} paymentId={id} auto={auto} />;

@@ -165,3 +165,10 @@ export function toPayload(p: PricedLine, saleLocationId: string, withSource: boo
 
 export const describeDiscount = (type: DiscountType | null, value: number, amount: number): string =>
   amount <= 0 ? '' : type === 'percent' ? `${value}% (${formatMoney(amount)})` : formatMoney(amount);
+
+/** Share of an order delivered (0–1), from base quantities; over-delivery counts as full. */
+export function deliveredShare(lines: { ordered_base_qty: number; delivered_base_qty: number }[]): number {
+  const ordered = lines.reduce((s, l) => s + l.ordered_base_qty, 0);
+  if (ordered <= 0) return 0;
+  return Math.min(lines.reduce((s, l) => s + Math.min(l.delivered_base_qty, l.ordered_base_qty), 0) / ordered, 1);
+}
