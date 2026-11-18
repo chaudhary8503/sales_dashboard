@@ -4,8 +4,213 @@
   flex-direction: column;
 }
 
-.app-body {
+/* Sidebar on the left, page on the right. */
+.app-frame {
   flex: 1;
   display: flex;
+  position: relative;
+}
+
+.app-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 760px) {
+  .app-frame {
+    flex-direction: column;
+  }
+}
+
+@media print {
+  .app-frame::before {
+    display: none;
+  }
+}
+
+/* ---------- Sales additions (same tokens as Inventory) ---------- */
+
+/* Blocked customer and other "stop" notices: amber with a bar. */
+.banner.warn {
+  background: var(--amber-light);
+  color: var(--amber);
+  border-left: 4px solid var(--amber);
+  font-weight: 500;
+}
+
+/* Dialogs */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(27, 35, 33, 0.35);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8vh 16px 16px;
+  overflow-y: auto;
+}
+.modal.card {
+  width: 100%;
+  max-width: 480px;
+  padding: 22px 24px;
+}
+.modal.card.wide {
+  max-width: 760px;
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.modal-head .section-title {
+  margin: 0;
+  font-size: 16px;
+}
+.modal-explain {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.modal-actions {
+  margin-top: 16px;
+}
+
+/* Tabs (status filters) */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.tabs button {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.tabs button[aria-pressed='true'] {
+  background: var(--brand-light);
+  border-color: var(--brand);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+/* Two-column detail layout: main + side panel; stacks on narrow screens. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 22px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Totals box */
+.totals {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 18px;
+  font-size: 14px;
+  max-width: 420px;
+  margin-left: auto;
+}
+.totals .total-label {
+  color: var(--muted);
+}
+.totals .total-value {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+.totals .grand {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+/* Segmented toggle (Cash / Credit) */
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.segmented button {
+  height: 40px;
+  padding: 0 20px;
+  border: none;
+  background: var(--surface);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+}
+.segmented button + button {
+  border-left: 1px solid var(--border);
+}
+.segmented button[aria-pressed='true'] {
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+}
+.segmented button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 16px;
+  font-size: 14px;
+  margin: 0;
+}
+.kv dt {
+  color: var(--muted);
+}
+.kv dd {
+  margin: 0;
+}
+.progress {
+  height: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 90px;
+}
+.progress > div {
+  height: 100%;
+  background: var(--green);
+}
+.progress.over > div {
+  background: var(--amber);
+}
+.amber {
+  color: var(--amber);
+}
+.load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
 }

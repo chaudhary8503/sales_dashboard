@@ -1,9 +1,9 @@
 @import './tokens.css';
 
-/* Base + page container copied from unified-portal/src/styles/global.css.
-   Form field rules copied from production-monitor's global.css (this app has
-   filter inputs); its sidebar/row-grid rules are omitted — no sidebars here. */
-
+/* Base, form field and page container rules copied from
+   sales_dashboard/src/styles/global.css (itself from unified-portal +
+   production-monitor). Table/tag rules copied from sales_dashboard's
+   TransactionTable.css and moved here, since two tables share them. */
 * {
   box-sizing: border-box;
 }
@@ -45,7 +45,7 @@ p.page-sub {
   margin: 0 0 28px;
 }
 
-/* ---------- shared form styles (FilterBar) ---------- */
+/* ---------- shared form styles (CutForm) ---------- */
 form .field {
   min-width: 0;
 }
@@ -83,11 +83,66 @@ form input:focus {
 }
 .page-inner {
   width: 100%;
-  max-width: 960px;
+  max-width: 1120px;
 }
 
 @media (max-width: 640px) {
   .page {
     padding: 28px 16px;
   }
+}
+
+/* ---------- shared table styles (BundleTable, CutLog) ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+td {
+  padding: 10px 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tr:last-child td {
+  border-bottom: none;
+}
+th.num,
+td.num {
+  text-align: right;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.tag {
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.table-note {
+  margin: 12px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.app-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 14px;
 }
