@@ -20,6 +20,7 @@ import { MODULE, PORTAL_URL } from './config';
 import { setErrorContext, toSalesError } from './errors';
 import { setLengthUnit, todayKarachi, type LengthUnit } from './format';
 import { supabase } from './lib/supabase';
+import AnalyticsPage from './pages/AnalyticsPage';
 import LoginPage from './pages/LoginPage';
 import ChequesPage from './pages/ChequesPage';
 import CreditNotePage from './pages/CreditNotePage';
@@ -38,6 +39,7 @@ import ReturnsPage from './pages/ReturnsPage';
 import SaleOrderNewPage from './pages/SaleOrderNewPage';
 import SaleOrderPage from './pages/SaleOrderPage';
 import SaleOrdersPage from './pages/SaleOrdersPage';
+import SettingsPage from './pages/SettingsPage';
 import ChallanPrint from './print/ChallanPrint';
 import CreditNotePrint from './print/CreditNotePrint';
 import InvoicePrint from './print/InvoicePrint';
@@ -258,18 +260,10 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
     case 'receivables':
       return allowed(section) ? <ReceivablesPage session={session} /> : <NoAccess />;
     case 'analytics':
+      return allowed(section) ? <AnalyticsPage session={session} /> : <NoAccess />;
     case 'settings':
-      return allowed(section) ? <Placeholder /> : <NoAccess />;
+      return allowed(section) ? <SettingsPage session={session} /> : <NoAccess />;
     default:
       return <NoAccess />;
   }
-}
-
-function Placeholder() {
-  return (
-    <div className="card">
-      <h1 className="page-title">Coming soon</h1>
-      <p className="page-sub">This screen is being built.</p>
-    </div>
-  );
 }
