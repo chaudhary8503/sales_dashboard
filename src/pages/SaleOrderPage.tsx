@@ -98,7 +98,7 @@ function SaleOrderPage({ session, orderId }: { session: Session; orderId: string
                   return (
                     <tr key={l.id}>
                       <td>{l.line_no}</td>
-                      <td className="wrap">
+                      <td className="wrap item-col">
                         <div>{l.invoice_name}</div>
                         {l.item_name !== l.invoice_name && <div className="sub">{l.item_name}</div>}
                       </td>

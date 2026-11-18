@@ -184,7 +184,7 @@ function ReturnForm({ session, inv }: { session: Session; inv: InvoiceDoc }) {
               <tbody>
                 {rows.map((r) => (
                   <tr key={r.l.id}>
-                    <td className="wrap">
+                    <td className="wrap item-col">
                       <div>{r.l.invoice_name}</div>
                       {r.l.item_name !== r.l.invoice_name && <div className="sub">{r.l.item_name}</div>}
                     </td>

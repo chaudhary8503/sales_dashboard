@@ -331,3 +331,21 @@ tr.total-row td {
   flex: 0 0 auto;
   min-width: 150px;
 }
+/* Summary cards side by side above a full-width table (invoice page). */
+.detail-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 22px;
+  align-items: stretch;
+}
+.detail-cards > .card {
+  margin: 0;
+}
+/* Item names get room before the other columns, so they don't wrap word by word. */
+td.item-col {
+  min-width: 260px;
+}
+/* Action buttons under a page title keep clear of what follows. */
+.page-head > .detail-actions {
+  margin-bottom: 20px;
+}

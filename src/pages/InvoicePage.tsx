@@ -102,79 +102,8 @@ function InvoicePage({ session, invoiceId }: { session: Session; invoiceId: stri
         )}
       </div>
 
-      <div className="split">
-        <div className="stack">
-          <div className="card">
-            <div className="section-title">Items</div>
-            <div className="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Item</th>
-                    <th className="num">Quantity</th>
-                    <th className="num">Rate</th>
-                    <th className="num">Discount</th>
-                    <th className="num">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {inv.lines.map((l) => (
-                    <tr key={l.id}>
-                      <td>{l.line_no}</td>
-                      <td className="wrap">
-                        <div>{l.invoice_name}</div>
-                        {l.item_name !== l.invoice_name && <div className="sub">{l.item_name}</div>}
-                        {l.bundles.length > 0 && <div className="sub">Bundles: {bundleSummary(l.bundles)}</div>}
-                        {l.source_location_id !== inv.sale_location_id && (
-                          <div className="sub">Supplied from {l.source_location_name}</div>
-                        )}
-                        {l.returned_base_qty > 0 && (
-                          <div className="sub amber">Returned: {formatQty(l.returned_base_qty, l.base_unit)}</div>
-                        )}
-                      </td>
-                      <td className="num">{qtyText(l)}</td>
-                      <td className="num mono">{rateText(l.rate, l.entered_unit)}</td>
-                      <td className="num mono">
-                        {l.discount_amount > 0 ? (l.discount_type === 'percent' ? `${l.discount_value}%` : formatMoney(l.discount_amount)) : '—'}
-                      </td>
-                      <td className="num mono">{formatMoney(l.gross_amount - l.discount_amount)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="totals totals-gap">
-              <span className="total-label">Subtotal</span>
-              <span className="total-value">{formatMoney(inv.subtotal)}</span>
-              {inv.line_discount_total > 0 && (
-                <>
-                  <span className="total-label">Line discounts</span>
-                  <span className="total-value">− {formatMoney(inv.line_discount_total)}</span>
-                </>
-              )}
-              {inv.invoice_discount_amount > 0 && (
-                <>
-                  <span className="total-label">Invoice discount</span>
-                  <span className="total-value">− {formatMoney(inv.invoice_discount_amount)}</span>
-                </>
-              )}
-              {inv.tax_total > 0 && (
-                <>
-                  <span className="total-label">Sales tax</span>
-                  <span className="total-value">{formatMoney(inv.tax_total)}</span>
-                </>
-              )}
-              <span className="total-label grand">Total</span>
-              <span className="total-value grand">{formatMoney(inv.total)}</span>
-            </div>
-            {inv.note && <p className="table-note">Note: {inv.note}</p>}
-          </div>
-
-          <PaymentsAndReturns inv={inv} />
-        </div>
-
-        <div className="stack">
+      <div className="stack">
+        <div className="detail-cards">
           <div className="card">
             <div className="section-title">Balance</div>
             {credit ? (
@@ -195,14 +124,26 @@ function InvoicePage({ session, invoiceId }: { session: Session; invoiceId: stri
                 </dd>
               </dl>
             ) : (
-              <p className="sub">
-                Cash sale, paid in full by {METHOD_LABELS[inv.cash_paid_via ?? 'cash'].toLowerCase()}
-                {inv.cash_reference ? ` (ref. ${inv.cash_reference})` : ''}.
-              </p>
+              <dl className="kv">
+                <dt>Total</dt>
+                <dd className="mono">{formatMoney(inv.total)}</dd>
+                <dt>Paid on the spot</dt>
+                <dd className="mono">{formatMoney(inv.total)}</dd>
+                <dt>Paid by</dt>
+                <dd>
+                  {METHOD_LABELS[inv.cash_paid_via ?? 'cash']}
+                  {inv.cash_reference ? ` (ref. ${inv.cash_reference})` : ''}
+                </dd>
+                <dt>
+                  <strong>Balance</strong>
+                </dt>
+                <dd className="mono">
+                  <strong>{formatMoney(0)}</strong>
+                </dd>
+              </dl>
             )}
             {credit && (balance?.pending ?? 0) > 0 && <p className="table-note">A cheque counts only when it is cleared.</p>}
           </div>
-
           <div className="card">
             <div className="section-title">Details</div>
             <dl className="kv">
@@ -257,6 +198,75 @@ function InvoicePage({ session, invoiceId }: { session: Session; invoiceId: stri
             </dl>
           </div>
         </div>
+
+        <div className="card">
+          <div className="section-title">Items</div>
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Item</th>
+                  <th className="num">Quantity</th>
+                  <th className="num">Rate</th>
+                  <th className="num">Discount</th>
+                  <th className="num">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {inv.lines.map((l) => (
+                  <tr key={l.id}>
+                    <td>{l.line_no}</td>
+                    <td className="wrap item-col">
+                      <div>{l.invoice_name}</div>
+                      {l.item_name !== l.invoice_name && <div className="sub">{l.item_name}</div>}
+                      {l.bundles.length > 0 && <div className="sub">Bundles: {bundleSummary(l.bundles)}</div>}
+                      {l.source_location_id !== inv.sale_location_id && (
+                        <div className="sub">Supplied from {l.source_location_name}</div>
+                      )}
+                      {l.returned_base_qty > 0 && (
+                        <div className="sub amber">Returned: {formatQty(l.returned_base_qty, l.base_unit)}</div>
+                      )}
+                    </td>
+                    <td className="num">{qtyText(l)}</td>
+                    <td className="num mono">{rateText(l.rate, l.entered_unit)}</td>
+                    <td className="num mono">
+                      {l.discount_amount > 0 ? (l.discount_type === 'percent' ? `${l.discount_value}%` : formatMoney(l.discount_amount)) : '—'}
+                    </td>
+                    <td className="num mono">{formatMoney(l.gross_amount - l.discount_amount)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="totals totals-gap">
+            <span className="total-label">Subtotal</span>
+            <span className="total-value">{formatMoney(inv.subtotal)}</span>
+            {inv.line_discount_total > 0 && (
+              <>
+                <span className="total-label">Line discounts</span>
+                <span className="total-value">− {formatMoney(inv.line_discount_total)}</span>
+              </>
+            )}
+            {inv.invoice_discount_amount > 0 && (
+              <>
+                <span className="total-label">Invoice discount</span>
+                <span className="total-value">− {formatMoney(inv.invoice_discount_amount)}</span>
+              </>
+            )}
+            {inv.tax_total > 0 && (
+              <>
+                <span className="total-label">Sales tax</span>
+                <span className="total-value">{formatMoney(inv.tax_total)}</span>
+              </>
+            )}
+            <span className="total-label grand">Total</span>
+            <span className="total-value grand">{formatMoney(inv.total)}</span>
+          </div>
+          {inv.note && <p className="table-note">Note: {inv.note}</p>}
+        </div>
+
+        <PaymentsAndReturns inv={inv} />
       </div>
 
       {cancelling && (

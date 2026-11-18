@@ -74,7 +74,7 @@ function CreditNotePage({ session, creditNoteId }: { session: Session; creditNot
                 {cn.lines.map((l) => (
                   <tr key={l.id}>
                     <td>{l.line_no}</td>
-                    <td className="wrap">{l.invoice_name}</td>
+                    <td className="wrap item-col">{l.invoice_name}</td>
                     <td className="num">{qtyText(l)}</td>
                     <td className="wrap">
                       {l.restock ? (
