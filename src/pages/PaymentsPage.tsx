@@ -7,7 +7,7 @@ import { useAsync, useDebounced } from '../hooks';
 import { go, href } from '../router';
 import { locationName, type Session } from '../session';
 
-/** Payments the person may see (all, cheque managers, or own), newest first. */
+/** Payments the person may see (all, people who clear cheques, or own), newest first. */
 function PaymentsPage({ session }: { session: Session }) {
   const [from, setFrom] = useState(daysAgo(30));
   const [to, setTo] = useState(session.today);

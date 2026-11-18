@@ -970,7 +970,7 @@ function filterText(s: string | null | undefined): string {
   return (s ?? '').replace(/[,()*%\\]/g, ' ').trim();
 }
 
-/** RLS decides whose payments come back (all, cheque managers, or own). Newest first. */
+/** RLS decides whose payments come back (all, people who clear cheques, or own). Newest first. */
 export async function listPayments(f: {
   from?: string | null;
   to?: string | null;
