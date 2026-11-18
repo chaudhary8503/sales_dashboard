@@ -214,3 +214,6 @@
   justify-content: center;
   margin-top: 14px;
 }
+.narrow-card {
+  max-width: 640px;
+}

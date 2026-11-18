@@ -22,6 +22,11 @@ import { setLengthUnit, todayKarachi, type LengthUnit } from './format';
 import { supabase } from './lib/supabase';
 import LoginPage from './pages/LoginPage';
 import NewSalePage from './pages/NewSalePage';
+import ChallanPrint from './print/ChallanPrint';
+import CreditNotePrint from './print/CreditNotePrint';
+import InvoicePrint from './print/InvoicePrint';
+import PaymentReceiptPrint from './print/PaymentReceiptPrint';
+import SaleOrderPrint from './print/SaleOrderPrint';
 import { useRoute, type Route } from './router';
 import { makeCan, type Session } from './session';
 
@@ -190,22 +195,47 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
     // Existing documents can still be opened and printed (e.g. a payment link from an alert).
     if (!(path[1] && path[1] !== 'new')) return <NotLive title={NEEDS_CUSTOMERS[section]} />;
   }
+  const id = path[1] && path[1] !== 'new' ? path[1] : null;
+  const isPrint = path[2] === 'print';
+  const auto = route.query.get('auto') === '1';
+  // Opening one document (detail or print) is checked by the database (own / all / searched customer);
+  // a link from the Portal must work for anyone allowed to see it.
   switch (section) {
     case 'new-sale':
       return allowed(section) ? <NewSalePage session={session} orderId={route.query.get('order')} /> : <NoAccess />;
-    case 'orders':
-    case 'invoices':
+    case 'invoices': {
+      if (id && isPrint) {
+        const format = route.query.get('format');
+        if (format === 'challan') return <ChallanPrint session={session} invoiceId={id} />;
+        return <InvoicePrint session={session} invoiceId={id} format={format === 'a5' ? 'a5' : 'a4'} auto={auto} />;
+      }
+      if (id) return <Placeholder />;
+      return allowed(section) ? <Placeholder /> : <NoAccess />;
+    }
+    case 'orders': {
+      if (id && isPrint) return <SaleOrderPrint session={session} orderId={id} auto={auto} />;
+      if (id) return <Placeholder />;
+      if (path[1] === 'new') return session.can('create_sale_order') ? <Placeholder /> : <NoAccess />;
+      return allowed(section) ? <Placeholder /> : <NoAccess />;
+    }
+    case 'payments': {
+      if (id && isPrint) return <PaymentReceiptPrint session={session} paymentId={id} auto={auto} />;
+      if (id) return <Placeholder />;
+      if (path[1] === 'new') return session.can('record_payment') ? <Placeholder /> : <NoAccess />;
+      return allowed(section) ? <Placeholder /> : <NoAccess />;
+    }
+    case 'credit-notes':
+      if (id && isPrint) return <CreditNotePrint session={session} creditNoteId={id} auto={auto} />;
+      return id ? <Placeholder /> : <NoAccess />;
+    case 'refunds':
+      return id ? <Placeholder /> : <NoAccess />;
     case 'customers':
-    case 'payments':
     case 'cheques':
     case 'returns':
     case 'receivables':
     case 'analytics':
     case 'settings':
       return allowed(section) ? <Placeholder /> : <NoAccess />;
-    case 'credit-notes':
-    case 'refunds':
-      return <Placeholder />;
     default:
       return <NoAccess />;
   }
