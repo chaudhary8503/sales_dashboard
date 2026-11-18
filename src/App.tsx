@@ -31,6 +31,7 @@ import NewSalePage from './pages/NewSalePage';
 import PaymentNewPage from './pages/PaymentNewPage';
 import PaymentPage from './pages/PaymentPage';
 import PaymentsPage from './pages/PaymentsPage';
+import ReceivablesPage from './pages/ReceivablesPage';
 import RefundPage from './pages/RefundPage';
 import ReturnNewPage from './pages/ReturnNewPage';
 import ReturnsPage from './pages/ReturnsPage';
@@ -255,6 +256,7 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
     case 'cheques':
       return allowed(section) ? <ChequesPage session={session} /> : <NoAccess />;
     case 'receivables':
+      return allowed(section) ? <ReceivablesPage session={session} /> : <NoAccess />;
     case 'analytics':
     case 'settings':
       return allowed(section) ? <Placeholder /> : <NoAccess />;

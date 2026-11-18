@@ -318,3 +318,10 @@ tr.late-row td {
 .settle-choice input {
   margin-top: 3px;
 }
+tr.sub-row td {
+  background: var(--bg);
+  font-size: 13px;
+}
+tr.total-row td {
+  border-top: 2px solid var(--border);
+}
