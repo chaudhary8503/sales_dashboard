@@ -39,3 +39,45 @@ export function toPaymentNow(p: PaymentDraft): PaymentNow | null {
     cheque_date: cheque ? p.chequeDate || null : null,
   };
 }
+
+export interface OpenForAllocation {
+  invoice_id: string;
+  invoice_no: string;
+  invoice_date: string;
+  due_date: string | null;
+  balance: number;
+  /** What can still be allocated (balance less pending cheques already allocated). */
+  open_to_allocate: number;
+}
+
+const cents = (v: number) => Math.round(v * 100) / 100;
+
+/** Oldest first (the order the server lists them, by due date), like the server's "null" allocation. */
+export function suggestAllocations(invoices: OpenForAllocation[], amount: number): Record<string, string> {
+  let left = cents(Math.max(amount, 0));
+  const out: Record<string, string> = {};
+  for (const inv of invoices) {
+    const take = cents(Math.min(inv.open_to_allocate, left));
+    out[inv.invoice_id] = take > 0 ? String(take) : '';
+    left = cents(left - take);
+  }
+  return out;
+}
+
+/** Sum of typed allocation amounts. */
+export function allocatedTotal(values: Record<string, string>): number {
+  return cents(Object.values(values).reduce((s, v) => s + (Number(v) || 0), 0));
+}
+
+/** First problem with typed allocations, or null. */
+export function allocationProblem(invoices: OpenForAllocation[], values: Record<string, string>, available: number): string | null {
+  for (const inv of invoices) {
+    const raw = values[inv.invoice_id] ?? '';
+    if (raw.trim() === '') continue;
+    const v = Number(raw);
+    if (!Number.isFinite(v) || v < 0) return `${inv.invoice_no}: the amount is not valid.`;
+    if (v > inv.open_to_allocate + 0.0001) return `${inv.invoice_no} only has ${inv.open_to_allocate.toFixed(2)} left to pay.`;
+  }
+  if (allocatedTotal(values) > available + 0.0001) return 'The amounts add up to more than the money available.';
+  return null;
+}

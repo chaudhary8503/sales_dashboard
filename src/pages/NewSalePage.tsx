@@ -1,5 +1,5 @@
 import { useMemo, useState, type FormEvent } from 'react';
-import { getDocument, recordSale, type CashVia, type Customer, type Method, type SaleHeader, type SaleOrderDoc } from '../api';
+import { getCustomerOverview, getDocument, recordSale, type CashVia, type Customer, type Method, type SaleHeader, type SaleOrderDoc } from '../api';
 import BundlePicker from '../components/BundlePicker';
 import { Banner, CUSTOMERS_NOT_LIVE, ErrorBanner, Loading, LocationSelect } from '../components/Common';
 import CustomerSearch, { CustomerCard } from '../components/CustomerSearch';
@@ -17,11 +17,24 @@ import './NewSalePage.css';
 const LAST_LOCATION_KEY = 'sales:lastLocation';
 
 /** New sale, or a delivery against a sale order (#/new-sale?order=<id>). */
-function NewSalePage({ session, orderId }: { session: Session; orderId: string | null }) {
+function NewSalePage({ session, orderId, customerId }: { session: Session; orderId: string | null; customerId: string | null }) {
   const order = useAsync(() => (orderId ? getDocument('sale_order', orderId) : Promise.resolve(null)), [orderId]);
+  // "New sale for this customer" from the customer page.
+  const preset = useAsync(
+    () => (customerId && !orderId && session.customersLive ? getCustomerOverview(customerId).then((o) => o.customer) : Promise.resolve(null)),
+    [customerId, orderId],
+  );
   if (orderId && order.loading && !order.data) return <Loading />;
   if (orderId && (order.error || !order.data)) return <Banner kind="error">{order.error ?? 'Sale order not found.'}</Banner>;
-  return <SaleForm key={orderId ?? 'new'} session={session} order={order.data ?? null} />;
+  if (customerId && preset.loading && preset.data === undefined) return <Loading />;
+  return (
+    <SaleForm
+      key={`${orderId ?? 'new'}-${preset.data?.customer_id ?? ''}`}
+      session={session}
+      order={order.data ?? null}
+      presetCustomer={preset.data ?? null}
+    />
+  );
 }
 
 interface PayNow {
@@ -58,7 +71,7 @@ function initialLines(session: Session, order: SaleOrderDoc | null): DraftLine[]
   return lines.length ? lines : [newLine()];
 }
 
-function SaleForm({ session, order }: { session: Session; order: SaleOrderDoc | null }) {
+function SaleForm({ session, order, presetCustomer }: { session: Session; order: SaleOrderDoc | null; presetCustomer: Customer | null }) {
   const today = session.today;
   const canCredit = session.can('credit_sale') && session.customersLive;
   const canBackdate = session.can('backdate_sale');
@@ -90,13 +103,15 @@ function SaleForm({ session, order }: { session: Session; order: SaleOrderDoc | 
           blocked: false,
           block_reason: null,
         }
-      : null,
+      : presetCustomer,
   );
   const [walkInName, setWalkInName] = useState('');
   const [walkInPhone, setWalkInPhone] = useState('');
   const [cashVia, setCashVia] = useState<CashVia>('cash');
   const [cashRef, setCashRef] = useState('');
-  const [creditDays, setCreditDays] = useState(order ? String(order.credit_days) : '');
+  const [creditDays, setCreditDays] = useState(
+    order ? String(order.credit_days) : presetCustomer?.payment_terms_days != null ? String(presetCustomer.payment_terms_days) : '',
+  );
   const [lines, setLines] = useState<DraftLine[]>(() => initialLines(session, order));
   const [showRaw, setShowRaw] = useState(false);
   const [invDiscType, setInvDiscType] = useState<'amount' | 'percent'>('amount');

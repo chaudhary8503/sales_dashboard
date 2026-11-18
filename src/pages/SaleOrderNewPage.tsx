@@ -1,21 +1,27 @@
 import { useMemo, useState, type FormEvent } from 'react';
-import { createSaleOrder, type Customer, type SaleOrderHeader } from '../api';
-import { Banner, ErrorBanner, LocationSelect } from '../components/Common';
+import { createSaleOrder, getCustomerOverview, type Customer, type SaleOrderHeader } from '../api';
+import { Banner, ErrorBanner, Loading, LocationSelect } from '../components/Common';
 import CustomerSearch, { CustomerCard } from '../components/CustomerSearch';
 import LineEditor from '../components/LineEditor';
 import PaymentFields from '../components/PaymentFields';
 import { formatDate, formatMoney } from '../format';
-import { storageGet, useAction, useRequestId } from '../hooks';
+import { storageGet, useAction, useAsync, useRequestId } from '../hooks';
 import { newLine, priceLines, RAW_MATERIALS, SELLABLE, toPayload, type DraftLine } from '../lines';
 import { emptyPayment, paymentProblem, toPaymentNow, type PaymentDraft } from '../payments';
 import { go } from '../router';
 import { itemById, type Session } from '../session';
 
 /** A sale order: a named customer, lines with rates (no supply location or bundles), an expected date and an optional advance. */
-function SaleOrderNewPage({ session }: { session: Session }) {
+function SaleOrderNewPage({ session, customerId }: { session: Session; customerId: string | null }) {
+  const preset = useAsync(() => (customerId ? getCustomerOverview(customerId).then((o) => o.customer) : Promise.resolve(null)), [customerId]);
+  if (customerId && preset.loading && preset.data === undefined) return <Loading />;
+  return <OrderForm key={preset.data?.customer_id ?? 'new'} session={session} presetCustomer={preset.data ?? null} />;
+}
+
+function OrderForm({ session, presetCustomer }: { session: Session; presetCustomer: Customer | null }) {
   const today = session.today;
   const canBackdate = session.can('backdate_sale');
-  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [customer, setCustomer] = useState<Customer | null>(presetCustomer);
   const [locationId, setLocationId] = useState(() => {
     const last = storageGet('sales:lastLocation');
     if (last && session.locations.some((l) => l.location_id === last)) return last;
@@ -23,7 +29,7 @@ function SaleOrderNewPage({ session }: { session: Session }) {
   });
   const [date, setDate] = useState(today);
   const [expected, setExpected] = useState('');
-  const [creditDays, setCreditDays] = useState('');
+  const [creditDays, setCreditDays] = useState(presetCustomer?.payment_terms_days != null ? String(presetCustomer.payment_terms_days) : '');
   const [lines, setLines] = useState<DraftLine[]>(() => [newLine()]);
   const [showRaw, setShowRaw] = useState(false);
   const [note, setNote] = useState('');

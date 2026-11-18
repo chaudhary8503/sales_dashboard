@@ -21,6 +21,8 @@ import { setErrorContext, toSalesError } from './errors';
 import { setLengthUnit, todayKarachi, type LengthUnit } from './format';
 import { supabase } from './lib/supabase';
 import LoginPage from './pages/LoginPage';
+import CustomerPage from './pages/CustomerPage';
+import CustomersPage from './pages/CustomersPage';
 import InvoicePage from './pages/InvoicePage';
 import InvoicesPage from './pages/InvoicesPage';
 import NewSalePage from './pages/NewSalePage';
@@ -207,7 +209,7 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
   // a link from the Portal must work for anyone allowed to see it.
   switch (section) {
     case 'new-sale':
-      return allowed(section) ? <NewSalePage session={session} orderId={route.query.get('order')} /> : <NoAccess />;
+      return allowed(section) ? <NewSalePage session={session} orderId={route.query.get('order')} customerId={route.query.get('customer')} /> : <NoAccess />;
     case 'invoices': {
       if (id && isPrint) {
         const format = route.query.get('format');
@@ -220,7 +222,7 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
     case 'orders': {
       if (id && isPrint) return <SaleOrderPrint session={session} orderId={id} auto={auto} />;
       if (id) return <SaleOrderPage session={session} orderId={id} />;
-      if (path[1] === 'new') return session.can('create_sale_order') ? <SaleOrderNewPage session={session} /> : <NoAccess />;
+      if (path[1] === 'new') return session.can('create_sale_order') ? <SaleOrderNewPage session={session} customerId={route.query.get('customer')} /> : <NoAccess />;
       return allowed(section) ? <SaleOrdersPage session={session} /> : <NoAccess />;
     }
     case 'payments': {
@@ -235,6 +237,8 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
     case 'refunds':
       return id ? <Placeholder /> : <NoAccess />;
     case 'customers':
+      if (!allowed(section)) return <NoAccess />;
+      return id ? <CustomerPage session={session} customerId={id} /> : <CustomersPage session={session} />;
     case 'cheques':
     case 'returns':
     case 'receivables':
