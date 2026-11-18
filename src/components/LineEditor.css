@@ -10,15 +10,23 @@
 }
 .sale-line-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  /* quantity + unit | rate | discount | supply from | amount */
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1.3fr) minmax(0, 1fr);
   gap: 12px 14px;
   align-items: start;
 }
+.sale-line-grid.order {
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+}
 .sale-line-grid .item-cell {
-  grid-column: span 6;
+  grid-column: 1 / -1;
+}
+.sale-line-grid .inline-input select {
+  min-width: 62px;
 }
 .sale-line-grid .line-total {
   text-align: right;
+  grid-column: -2 / -1;
 }
 .sale-line-grid .line-total .mono {
   height: 40px;
@@ -26,13 +34,7 @@
   align-items: center;
   justify-content: flex-end;
   font-weight: 600;
-}
-/* Quantity, rate, discount, supply, amount share the second row. */
-.sale-line-grid > .field:not(.item-cell) {
-  grid-column: span 1;
-}
-.sale-line-grid > .field:nth-child(2) {
-  grid-column: span 2;
+  white-space: nowrap;
 }
 .sale-line-bundles {
   display: flex;
@@ -42,14 +44,15 @@
   margin-top: 10px;
 }
 @media (max-width: 760px) {
-  .sale-line-grid {
+  .sale-line-grid,
+  .sale-line-grid.order {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .sale-line-grid .item-cell,
   .sale-line-grid > .field:nth-child(2) {
-    grid-column: span 2;
+    grid-column: 1 / -1;
   }
   .sale-line-grid .line-total {
+    grid-column: auto;
     text-align: left;
   }
   .sale-line-grid .line-total .mono {

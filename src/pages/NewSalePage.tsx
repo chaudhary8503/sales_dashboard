@@ -353,7 +353,7 @@ function SaleForm({ session, order, presetCustomer }: { session: Session; order:
               <div className="field">
                 <label htmlFor="ns-via">Paid by</label>
                 <div className="inline-input">
-                  <select id="ns-via" value={cashVia} onChange={(e) => setCashVia(e.target.value as CashVia)}>
+                  <select id="ns-via" className="fixed" value={cashVia} onChange={(e) => setCashVia(e.target.value as CashVia)}>
                     <option value="cash">Cash</option>
                     <option value="bank_transfer">Bank transfer</option>
                     <option value="online">Online</option>

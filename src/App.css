@@ -325,3 +325,8 @@ tr.sub-row td {
 tr.total-row td {
   border-top: 2px solid var(--border);
 }
+/* A select that keeps its width when it comes first in an .inline-input row. */
+.inline-input > select.fixed {
+  flex: 0 0 auto;
+  min-width: 150px;
+}
