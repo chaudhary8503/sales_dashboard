@@ -1,0 +1,79 @@
+/* Header, lines and totals on the left; the stock panel on the right.
+   Narrow screens: header, lines, stock, totals. */
+.new-sale {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-areas:
+    'head stock'
+    'lines stock'
+    'totals stock';
+  gap: 22px;
+  align-items: start;
+}
+.ns-head {
+  grid-area: head;
+}
+.ns-lines {
+  grid-area: lines;
+}
+.ns-stock {
+  grid-area: stock;
+  align-self: stretch;
+}
+.ns-totals {
+  grid-area: totals;
+}
+.ns-head .form-grid {
+  margin-bottom: 0;
+}
+.ns-head .banner {
+  margin: 16px 0 0;
+}
+.ns-static {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+.ns-lines-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.ns-lines-head .section-title {
+  margin: 0;
+}
+.ns-invdisc {
+  max-width: 260px;
+  margin-bottom: 16px;
+}
+.ns-paynow {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.ns-paynow .form-grid {
+  margin-bottom: 0;
+}
+.ns-note {
+  margin: 18px 0;
+}
+.ns-retry {
+  margin: -6px 0 14px;
+}
+.ns-problems {
+  margin: 0 0 10px;
+}
+
+@media (max-width: 1100px) {
+  .new-sale {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'head'
+      'lines'
+      'stock'
+      'totals';
+  }
+}

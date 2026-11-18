@@ -1,0 +1,58 @@
+.sale-line {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+.sale-line-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.sale-line-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px 14px;
+  align-items: start;
+}
+.sale-line-grid .item-cell {
+  grid-column: span 6;
+}
+.sale-line-grid .line-total {
+  text-align: right;
+}
+.sale-line-grid .line-total .mono {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-weight: 600;
+}
+/* Quantity, rate, discount, supply, amount share the second row. */
+.sale-line-grid > .field:not(.item-cell) {
+  grid-column: span 1;
+}
+.sale-line-grid > .field:nth-child(2) {
+  grid-column: span 2;
+}
+.sale-line-bundles {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+@media (max-width: 760px) {
+  .sale-line-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sale-line-grid .item-cell,
+  .sale-line-grid > .field:nth-child(2) {
+    grid-column: span 2;
+  }
+  .sale-line-grid .line-total {
+    text-align: left;
+  }
+  .sale-line-grid .line-total .mono {
+    justify-content: flex-start;
+  }
+}

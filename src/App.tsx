@@ -21,6 +21,7 @@ import { setErrorContext, toSalesError } from './errors';
 import { setLengthUnit, todayKarachi, type LengthUnit } from './format';
 import { supabase } from './lib/supabase';
 import LoginPage from './pages/LoginPage';
+import NewSalePage from './pages/NewSalePage';
 import { useRoute, type Route } from './router';
 import { makeCan, type Session } from './session';
 
@@ -191,6 +192,7 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
   }
   switch (section) {
     case 'new-sale':
+      return allowed(section) ? <NewSalePage session={session} orderId={route.query.get('order')} /> : <NoAccess />;
     case 'orders':
     case 'invoices':
     case 'customers':
