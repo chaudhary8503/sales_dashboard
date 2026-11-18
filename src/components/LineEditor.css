@@ -1,0 +1,122 @@
+/* Each line is a soft panel: header (line no. + amount), item, one row of
+   equal fields, then the bundle footer. Inputs stay white on the panel. */
+.line-editor > .btn {
+  margin-top: 4px;
+}
+.sale-line {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px 16px;
+  margin-bottom: 14px;
+}
+.sale-line-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.sale-line-no {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sale-line-head-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.sale-line-amount {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.sale-line-amount.empty {
+  color: var(--muted);
+  font-weight: 500;
+}
+.sale-line-head .link-btn {
+  font-size: 13px;
+  color: var(--muted);
+}
+.sale-line-head .link-btn:hover {
+  color: var(--amber);
+}
+
+.sale-line .item-cell {
+  margin-bottom: 12px;
+}
+
+/* Quantity + unit | rate | discount | supply from — equal columns. */
+.sale-line-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px 14px;
+  align-items: start;
+}
+.sale-line-grid.order,
+.sale-line-grid.invoice.no-discount {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.sale-line-grid.order.no-discount {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.sale-line-grid .field {
+  min-width: 0;
+}
+/* Every control the same height and width rules. */
+.sale-line .field input,
+.sale-line .field select {
+  height: 40px;
+}
+.sale-line-grid .inline-input {
+  gap: 6px;
+}
+.sale-line-grid .inline-input select {
+  flex: 0 0 auto;
+  width: 70px;
+  min-width: 70px;
+  padding: 0 6px;
+}
+.sale-line-grid select {
+  text-overflow: ellipsis;
+}
+.sale-line-grid .hint:empty {
+  display: none;
+}
+
+.sale-line-foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+.sale-line .field-problem {
+  margin: 10px 0 0;
+}
+
+@media (max-width: 900px) {
+  .sale-line-grid,
+  .sale-line-grid.order,
+  .sale-line-grid.invoice.no-discount {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .sale-line {
+    padding: 12px;
+  }
+  .sale-line-grid,
+  .sale-line-grid.order,
+  .sale-line-grid.invoice.no-discount,
+  .sale-line-grid.order.no-discount {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
