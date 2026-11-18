@@ -43,28 +43,33 @@ function LineEditor({ session, lines, priced, onChange, mode, categories, saleLo
         return (
           <div className="sale-line" key={l.key}>
             <div className="sale-line-head">
-              <span className="sub">Line {i + 1}</span>
-              {lines.length > 1 && !lockItems && (
-                <button type="button" className="link-btn" onClick={() => onChange(lines.filter((x) => x.key !== l.key))}>
-                  Remove
-                </button>
-              )}
-            </div>
-            <div className={`sale-line-grid ${mode}`}>
-              <div className="field item-cell">
-                <label htmlFor={`ln-item-${l.key}`}>Item</label>
-                <ItemPicker
-                  id={`ln-item-${l.key}`}
-                  items={session.items}
-                  categories={categories}
-                  value={l.itemId}
-                  disabled={lockItems}
-                  onChange={(id) => {
-                    const it = session.items.find((x) => x.item_id === id);
-                    update(l.key, { itemId: id, unit: defaultUnit(it), bundles: [] });
-                  }}
-                />
+              <span className="sale-line-no">Line {i + 1}</span>
+              <div className="sale-line-head-right">
+                <span className={`sale-line-amount mono${item ? '' : ' empty'}`} aria-label="Line amount">
+                  {formatMoney(p.gross - p.discount)}
+                </span>
+                {lines.length > 1 && !lockItems && (
+                  <button type="button" className="link-btn" onClick={() => onChange(lines.filter((x) => x.key !== l.key))}>
+                    Remove
+                  </button>
+                )}
               </div>
+            </div>
+            <div className="field item-cell">
+              <label htmlFor={`ln-item-${l.key}`}>Item</label>
+              <ItemPicker
+                id={`ln-item-${l.key}`}
+                items={session.items}
+                categories={categories}
+                value={l.itemId}
+                disabled={lockItems}
+                onChange={(id) => {
+                  const it = session.items.find((x) => x.item_id === id);
+                  update(l.key, { itemId: id, unit: defaultUnit(it), bundles: [] });
+                }}
+              />
+            </div>
+            <div className={`sale-line-grid ${mode}${canDiscount ? '' : ' no-discount'}`}>
               <div className="field">
                 <label htmlFor={`ln-qty-${l.key}`}>Quantity</label>
                 <QuantityInput
@@ -132,14 +137,10 @@ function LineEditor({ session, lines, priced, onChange, mode, categories, saleLo
                   />
                 </div>
               )}
-              <div className="field line-total">
-                <span className="label">Amount</span>
-                <div className="mono">{formatMoney(p.gross - p.discount)}</div>
-              </div>
             </div>
 
             {mode === 'invoice' && isCable && (
-              <div className="sale-line-bundles">
+              <div className="sale-line-foot">
                 {canChooseBundle ? (
                   <>
                     <button
