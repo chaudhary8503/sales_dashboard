@@ -22,6 +22,7 @@ import { setLengthUnit, todayKarachi, type LengthUnit } from './format';
 import { supabase } from './lib/supabase';
 import LoginPage from './pages/LoginPage';
 import ChequesPage from './pages/ChequesPage';
+import CreditNotePage from './pages/CreditNotePage';
 import CustomerPage from './pages/CustomerPage';
 import CustomersPage from './pages/CustomersPage';
 import InvoicePage from './pages/InvoicePage';
@@ -30,6 +31,9 @@ import NewSalePage from './pages/NewSalePage';
 import PaymentNewPage from './pages/PaymentNewPage';
 import PaymentPage from './pages/PaymentPage';
 import PaymentsPage from './pages/PaymentsPage';
+import RefundPage from './pages/RefundPage';
+import ReturnNewPage from './pages/ReturnNewPage';
+import ReturnsPage from './pages/ReturnsPage';
 import SaleOrderNewPage from './pages/SaleOrderNewPage';
 import SaleOrderPage from './pages/SaleOrderPage';
 import SaleOrdersPage from './pages/SaleOrdersPage';
@@ -238,15 +242,18 @@ function renderPage(session: Session, route: Route, section: string, allowed: (k
     }
     case 'credit-notes':
       if (id && isPrint) return <CreditNotePrint session={session} creditNoteId={id} auto={auto} />;
-      return id ? <Placeholder /> : <NoAccess />;
+      return id ? <CreditNotePage session={session} creditNoteId={id} /> : <NoAccess />;
     case 'refunds':
-      return id ? <Placeholder /> : <NoAccess />;
+      return id ? <RefundPage session={session} refundId={id} /> : <NoAccess />;
+    case 'returns':
+      if (path[1] === 'new')
+        return session.can('issue_credit_note') ? <ReturnNewPage session={session} invoiceId={route.query.get('invoice')} /> : <NoAccess />;
+      return allowed(section) ? <ReturnsPage session={session} /> : <NoAccess />;
     case 'customers':
       if (!allowed(section)) return <NoAccess />;
       return id ? <CustomerPage session={session} customerId={id} /> : <CustomersPage session={session} />;
     case 'cheques':
       return allowed(section) ? <ChequesPage session={session} /> : <NoAccess />;
-    case 'returns':
     case 'receivables':
     case 'analytics':
     case 'settings':

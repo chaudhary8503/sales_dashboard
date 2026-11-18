@@ -268,3 +268,53 @@
 tr.late-row td {
   background: var(--amber-light);
 }
+.return-qty {
+  align-items: center;
+}
+.return-qty .link-btn {
+  white-space: nowrap;
+  font-size: 12.5px;
+}
+.return-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+}
+.return-options select {
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 8px;
+  font-family: inherit;
+  font-size: 13px;
+  background: #fff;
+}
+.settle-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.settle-choice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.settle-choice span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.settle-choice.on {
+  border-color: var(--brand);
+  background: var(--brand-light);
+}
+.settle-choice input {
+  margin-top: 3px;
+}
